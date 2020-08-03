@@ -1,0 +1,67 @@
+'1594297127971':
+  alias: Watch Sky
+  sequence:
+  - data:
+      activity: Watch Sky
+    entity_id: remote.living_room
+    service: remote.turn_on
+'1594672002152':
+  alias: Kitchen Lights Off
+  sequence:
+  - data:
+      entity_id: switch.sonoff_1000adb337
+    service: switch.turn_off
+  - data:
+      entity_id: switch.sonoff_1000ad9a0d
+    service: switch.turn_off
+'1594672085888':
+  alias: Kitchen Lights On
+  sequence:
+  - data:
+      entity_id: switch.sonoff_1000adb337
+    service: switch.turn_on
+  - data:
+      entity_id: switch.sonoff_1000ad9a0d
+    service: switch.turn_on
+'1594672853916':
+  alias: Goodnight
+  sequence:
+  - data: {}
+    service: script.1594672002152
+  - device_id: 7efeef6bf74b487cb0723f6e90eb1c92
+    domain: switch
+    entity_id: switch.living_room_scentsy_mss310_main_channel
+    type: turn_off
+  - device_id: 7efeef6bf74b487cb0723f6e90eb1c92
+    domain: switch
+    entity_id: switch.living_room_scentsy_mss310_main_channel
+    type: turn_off
+  - device_id: 446e22a7a2c947c2ad89819a69102231
+    domain: switch
+    entity_id: switch.flower_mirror_lights_mss310_main_channel
+    type: turn_off
+  - device_id: a707501b5788431f867e39be57fae49c
+    domain: switch
+    entity_id: switch.kitchen_scentsy
+    type: turn_off
+  - device_id: 77587b30a4224805b52dd85331c06db7
+    domain: light
+    entity_id: light.living_room
+    type: turn_off
+  mode: single
+'1595540062383':
+  alias: Good Morning
+  sequence:
+  - device_id: 7efeef6bf74b487cb0723f6e90eb1c92
+    domain: switch
+    entity_id: switch.living_room_scentsy_mss310_main_channel
+    type: turn_on
+  - device_id: a707501b5788431f867e39be57fae49c
+    domain: switch
+    entity_id: switch.kitchen_scentsy
+    type: turn_on
+  - data:
+      activity: Watch Apple TV
+    entity_id: remote.living_room_harmony_hub
+    service: remote.turn_on
+  mode: single

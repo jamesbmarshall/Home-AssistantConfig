@@ -1,0 +1,500 @@
+- id: '1594159126632'
+  alias: Shed Door Opening
+  description: ''
+  trigger:
+  - device_id: e96048139216437eaf619c78ea1f6997
+    domain: binary_sensor
+    entity_id: binary_sensor.shed_door_sensor_sensor
+    platform: device
+    type: turned_off
+  condition: []
+  action:
+  - data:
+      message: Shed door is open!
+    service: notify.mobile_app_james_iphone_11
+  mode: single
+- id: '1594213991127'
+  alias: Water Detected!
+  description: ''
+  trigger:
+  - device_id: 6fe33a4173e94288beb5658dd21c83b4
+    domain: binary_sensor
+    entity_id: binary_sensor.water_12
+    platform: device
+    type: moist
+  condition: []
+  action:
+  - data:
+      data:
+        push:
+          sound:
+            critical: 1
+            name: default
+            volume: 1
+      message: There's water in the shed!
+      title: Red Alert!
+    service: notify.mobile_app_james_iphone_11
+  mode: single
+- id: '1594236433041'
+  alias: Shed AC On
+  description: ''
+  trigger:
+  - above: '22'
+    entity_id: sensor.shed_sensor_temperature_measurement
+    for: 00:05:00
+    platform: numeric_state
+  condition: []
+  action:
+  - device_id: 1dd6d406d4e84c498efa6501eba75625
+    domain: climate
+    entity_id: climate.11786213bcddc21f1cd7
+    hvac_mode: cool
+    type: set_hvac_mode
+  - data:
+      message: AC is now on.
+    service: notify.mobile_app_james_iphone_11
+- id: '1594236571360'
+  alias: Shed AC Off
+  description: ''
+  trigger:
+  - below: '21'
+    entity_id: sensor.shed_sensor_temperature_measurement
+    for: 00:30:00
+    platform: numeric_state
+  condition: []
+  action:
+  - device_id: 1dd6d406d4e84c498efa6501eba75625
+    domain: climate
+    entity_id: climate.11786213bcddc21f1cd7
+    hvac_mode: 'off'
+    type: set_hvac_mode
+  - data:
+      message: AC is now off.
+    service: notify.mobile_app_james_iphone_11
+- id: '1594241160022'
+  alias: Natalie Leaves
+  description: ''
+  trigger:
+  - entity_id: person.natalie
+    event: leave
+    platform: zone
+    zone: zone.home
+  condition: []
+  action:
+  - data:
+      message: Natalie has left the building!
+    service: notify.mobile_app_james_iphone_11
+- id: '1594241242227'
+  alias: Natalie Arrives
+  description: ''
+  trigger:
+  - entity_id: person.natalie
+    event: enter
+    platform: zone
+    zone: zone.home
+  condition: []
+  action:
+  - data:
+      message: Natalie has arrived!
+    service: notify.mobile_app_james_iphone_11
+- id: '1594242517725'
+  alias: Ambient Lights On
+  description: Turn on mirror and flower lights 30mins before sunset
+  trigger:
+  - event: sunset
+    offset: -00:30:00
+    platform: sun
+  condition: []
+  action:
+  - device_id: 446e22a7a2c947c2ad89819a69102231
+    domain: switch
+    entity_id: switch.flower_mirror_lights_mss310_main_channel
+    type: turn_on
+  - service: script.1594672085888
+- id: '1594672382759'
+  alias: Fish Tank Lights On
+  description: ''
+  trigger:
+  - at: '15:00:00'
+    platform: time
+  condition: []
+  action:
+  - device_id: abb23a99b8d94aa2be89445fc4c418db
+    domain: switch
+    entity_id: switch.fish_tank_lights
+    type: turn_on
+- id: '1594672426311'
+  alias: Fish Tank Lights Off
+  description: ''
+  trigger:
+  - at: '23:59:59'
+    platform: time
+  condition: []
+  action:
+  - device_id: abb23a99b8d94aa2be89445fc4c418db
+    domain: switch
+    entity_id: switch.fish_tank_lights
+    type: turn_off
+- id: '1594764226251'
+  alias: Patio Door Open
+  description: ''
+  trigger:
+  - device_id: 782c646789aa48e48a1512566816fbf0
+    domain: binary_sensor
+    entity_id: binary_sensor.patio_door_sensor_sensor
+    platform: device
+    type: turned_off
+  condition: []
+  action:
+  - data:
+      message: Patio door is open!
+    service: notify.mobile_app_james_iphone_11
+  mode: single
+- id: '1594845017294'
+  alias: 'Alarm: send notification when alarm is triggered'
+  description: ''
+  trigger:
+  - entity_id: alarm_control_panel.home_alarm
+    platform: state
+    to: triggered
+  condition: []
+  action:
+  - data:
+      data:
+        push:
+          sound:
+            critical: 1
+            name: default
+            volume: 1
+      message: The alarm has been triggered!
+      title: Home Alarm
+    service: notify.mobile_app_james_iphone_11
+- id: '1594845265458'
+  alias: 'Alarm: send notification when alarm is armed in Away mode'
+  description: ''
+  trigger:
+  - entity_id: alarm_control_panel.home_alarm
+    platform: state
+    to: armed_away
+  condition: []
+  action:
+  - data:
+      message: The alarm is armed in Away mode at {{ now().strftime('%H:%M %d/%m')
+        }}.
+    service: notify.notify
+- id: '1594847283338'
+  alias: 'Alarm: send notification when alarm is disarmed'
+  description: ''
+  trigger:
+  - entity_id: alarm_control_panel.home_alarm
+    platform: state
+    to: disarmed
+  condition: []
+  action:
+  - data:
+      message: The home alarm has been disarmed at {{ now().strftime('%H:%M %d/%m')
+        }}.
+    service: notify.notify
+- id: '1594847394700'
+  alias: 'Alarm: send notification when alarm is armed in Home mode'
+  description: ''
+  trigger:
+  - entity_id: alarm_control_panel.home_alarm
+    platform: state
+    to: armed_home
+  condition: []
+  action:
+  - data:
+      message: The alarm is armed in Home mode at {{ now().strftime('%H:%M %d/%m')
+        }}.
+    service: notify.notify
+- id: '1594847512652'
+  alias: 'Alarm: send notification when alarm is in pending status'
+  description: ''
+  trigger:
+  - entity_id: alarm_control_panel.home_alarm
+    platform: state
+    to: pending
+  condition: []
+  action:
+  - data:
+      message: The alarm is armed in pending status at {{ now().strftime('%H:%M %d/%m')
+        }}.
+    service: notify.notify
+- id: '1594847746119'
+  alias: 'Alarm: trigger alarm while armed in Away mode'
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.patio_door_right_contact
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.shed_door_contact
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.shed_sensor_motion
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.hallway_sensor_motion
+    platform: state
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.home_alarm
+    state: armed_away
+  action:
+  - data: {}
+    entity_id: alarm_control_panel.home_alarm
+    service: alarm_control_panel.alarm_trigger
+- id: '1594935412403'
+  alias: Outside Light Sunset
+  description: ''
+  trigger:
+  - event: sunset
+    offset: -00:30:00
+    platform: sun
+  condition: []
+  action:
+  - brightness_pct: 100
+    device_id: 19b3285df1d14b68a12ca706277eb025
+    domain: light
+    entity_id: light.shed_exterior
+    type: turn_on
+- id: '1594935521108'
+  alias: Outside Light Off
+  description: ''
+  trigger:
+  - at: '22:30:00'
+    platform: time
+  condition: []
+  action:
+  - device_id: 19b3285df1d14b68a12ca706277eb025
+    domain: light
+    entity_id: light.shed_exterior
+    type: turn_off
+- id: '1594935606676'
+  alias: Outside Light Security On
+  description: ''
+  trigger:
+  - device_id: 3ac5da027e4a4380b1c59a8c2c4515a1
+    domain: light
+    entity_id: light.garden_light
+    platform: device
+    type: turned_on
+  condition: []
+  action:
+  - brightness_pct: 100
+    device_id: 19b3285df1d14b68a12ca706277eb025
+    domain: light
+    entity_id: light.shed_exterior
+    type: turn_on
+- id: '1594935701586'
+  alias: Outside Security Off
+  description: ''
+  trigger:
+  - device_id: 3ac5da027e4a4380b1c59a8c2c4515a1
+    domain: light
+    entity_id: light.garden_light
+    platform: device
+    type: turned_off
+  condition: []
+  action:
+  - device_id: 19b3285df1d14b68a12ca706277eb025
+    domain: light
+    entity_id: light.shed_exterior
+    type: turn_off
+- id: '1595541338597'
+  alias: Shed Night Light
+  description: ''
+  trigger:
+  - device_id: e96048139216437eaf619c78ea1f6997
+    domain: binary_sensor
+    entity_id: binary_sensor.shed_door_sensor_sensor
+    platform: device
+    type: turned_off
+  - device_id: 782c646789aa48e48a1512566816fbf0
+    domain: binary_sensor
+    entity_id: binary_sensor.patio_door_sensor_sensor
+    platform: device
+    type: turned_off
+  condition:
+  - condition: device
+    device_id: 15b3657c4da84b94b61a49908b1dc66a
+    domain: light
+    entity_id: light.dimmable_light_10
+    type: is_off
+  - condition: or
+    conditions:
+    - after: sunset
+      condition: sun
+    - before: sunrise
+      condition: sun
+  action:
+  - brightness_pct: 100
+    device_id: 15b3657c4da84b94b61a49908b1dc66a
+    domain: light
+    entity_id: light.dimmable_light_10
+    type: turn_on
+  - delay: 00:00:10
+  - condition: and
+    conditions:
+    - condition: device
+      device_id: e96048139216437eaf619c78ea1f6997
+      domain: binary_sensor
+      entity_id: binary_sensor.shed_door_sensor_sensor
+      type: is_on
+    - condition: device
+      device_id: 782c646789aa48e48a1512566816fbf0
+      domain: binary_sensor
+      entity_id: binary_sensor.patio_door_sensor_sensor
+      type: is_on
+  - delay: 00:00:03
+  - device_id: 15b3657c4da84b94b61a49908b1dc66a
+    domain: light
+    entity_id: light.dimmable_light_10
+    type: turn_off
+  mode: single
+- id: '1595767826721'
+  alias: Shutdown House
+  description: ''
+  trigger:
+  - at: '23:59:59'
+    platform: time
+  condition: []
+  action:
+  - data: {}
+    service: script.1594672853916
+  mode: single
+- id: '1595888351710'
+  alias: Hallway Motion
+  description: ''
+  trigger:
+  - device_id: 6244676f434d49ba87b8f7eefbb7115d
+    domain: binary_sensor
+    entity_id: binary_sensor.hallway_motion_sensor
+    platform: device
+    type: motion
+  condition:
+  - condition: or
+    conditions:
+    - after: sunset
+      after_offset: -02:00:00
+      condition: sun
+    - before: sunrise
+      before_offset: 02:00:00
+      condition: sun
+  action:
+  - brightness_pct: 80
+    device_id: fd6f47931199490aa61a5f8a60329fc0
+    domain: light
+    entity_id: light.hallway_light
+    type: turn_on
+  - wait_template: '{{ is_state("binary_sensor.hallway_motion_sensor", "off") }}'
+  - device_id: fd6f47931199490aa61a5f8a60329fc0
+    domain: light
+    entity_id: light.hallway_light
+    type: turn_off
+  mode: single
+- id: '1596048106932'
+  alias: Living Room Lights on at Sunset
+  description: ''
+  trigger:
+  - event: sunset
+    offset: -01:00:00
+    platform: sun
+  condition: []
+  action:
+  - data:
+      entity_id: scene.living_room_evening
+      transition: 3600
+    service: scene.turn_on
+  mode: single
+- id: '1596052991254'
+  alias: Landing Light Motion
+  description: ''
+  trigger:
+  - device_id: 2dc2b9672b2944f9b26ce1f3202832dd
+    domain: binary_sensor
+    entity_id: binary_sensor.presence_7
+    platform: device
+    type: motion
+  condition:
+  - condition: or
+    conditions:
+    - after: sunset
+      after_offset: -02:00:00
+      condition: sun
+    - before: sunrise
+      before_offset: 01:00:00
+      condition: sun
+  action:
+  - brightness_pct: 1
+    device_id: 3e67ae6a9af14f8ba92cdb80b272d9c4
+    domain: light
+    entity_id: light.dimmable_light_11
+    type: turn_on
+  - wait_template: '{{ is_state("binary_sensor.presence_7", "off") }}'
+  - device_id: 3e67ae6a9af14f8ba92cdb80b272d9c4
+    domain: light
+    entity_id: light.dimmable_light_11
+    type: turn_off
+  mode: single
+- id: '1596054256364'
+  alias: Watch TV Started
+  description: ''
+  trigger:
+  - entity_id: remote.living_room_harmony_hub
+    platform: state
+  condition:
+  - condition: or
+    conditions:
+    - condition: template
+      value_template: '{{ trigger.to_state.attributes.current_activity == "Watch Sky"
+        }}'
+    - condition: template
+      value_template: '{{ trigger.to_state.attributes.current_activity == "Watch Apple
+        TV" }}'
+  action:
+  - entity_id: input_boolean.notify
+    service: input_boolean.turn_on
+  mode: single
+- id: '1596054334585'
+  alias: TV Turned Off
+  description: ''
+  trigger:
+  - entity_id: remote.living_room_harmony_hub
+    platform: state
+  condition:
+  - condition: template
+    value_template: '{{ trigger.to_state.attributes.current_activity == "PowerOff"
+      }}'
+  action:
+  - entity_id: input_boolean.notify
+    service: input_boolean.turn_off
+  mode: single
+- id: '1596054462276'
+  alias: Turn TV Light On
+  description: ''
+  trigger:
+  - entity_id: automation.watch_tv_started
+    platform: state
+  condition: []
+  action:
+  - brightness_pct: 70
+    device_id: da4a2a92e07045d9bbadb3771dace1e4
+    domain: light
+    entity_id: light.extended_color_light_16
+    type: turn_on
+  mode: single
+- id: '1596056707489'
+  alias: Turn TV Light Off
+  description: ''
+  trigger:
+  - entity_id: automation.tv_turned_off
+    platform: state
+  condition: []
+  action:
+  - device_id: da4a2a92e07045d9bbadb3771dace1e4
+    domain: light
+    entity_id: light.extended_color_light_16
+    type: turn_off
+  mode: single

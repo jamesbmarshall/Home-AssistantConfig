@@ -1,0 +1,116 @@
+discovery:
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+homeassistant:
+  customize: !include customize.yaml
+
+recorder:
+  db_url: !secret db_url
+
+camera:
+  - platform: foscam
+    ip: 192.168.0.148
+    port: 88
+    username: !secret orla_camera_username
+    password: !secret orla_camera
+    name: Orla Camera
+
+  - platform: foscam
+    ip: 192.168.0.199
+    port: 88
+    username: !secret lounge_camera_username
+    password: !secret lounge_camera
+    name: Lounge Camera
+
+  - platform: foscam
+    ip: 192.168.0.194
+    port: 88
+    username: !secret shed_camera_username
+    password: !secret shed_camera
+    name: Shed Camera
+
+### SENSORS ###
+
+sensor:
+  - platform: template
+    sensors:
+      living_room_remote:
+        value_template: '{{ state_attr("remote.living_room", "current_activity") }}'
+        friendly_name: 'Whats On'
+
+  - platform: london_underground
+    line:
+      - Bakerloo
+      - Central
+      - Circle
+      - District
+      - DLR
+      - Hammersmith & City
+      - Jubilee
+      - London Overground
+      - Metropolitan
+      - Northern
+      - Piccadilly
+      - TfL Rail
+      - Victoria
+      - Waterloo & City
+
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /home
+      - type: memory_free
+
+  # Tracking entity to entity
+  - platform: waze_travel_time
+    name: "Paul and Elizabeth"
+    origin: Home
+    destination: !secret home_coords
+    region: 'EU'
+
+  - platform: waze_travel_time
+    name: "Paul and Lorraine"
+    origin: Home
+    destination: !secret inlaws_coords
+    region: 'EU'
+
+
+sonoff:
+  username: !secret sonoff_username
+  password: !secret sonoff_password
+
+http:
+    base_url: !secret base_url
+    ssl_certificate: /ssl/fullchain.pem
+    ssl_key: /ssl/privkey.pem
+
+alexa_media:
+  accounts:
+    - email: !secret amazon_user
+      password: !secret amazon_password
+      url: amazon.co.uk
+
+####### ALARM SETTINGS ########
+
+alarm_control_panel:
+  - platform: manual
+    name: Home Alarm
+    code: !secret alarm_code
+    arming_time: 30
+    delay_time: 20
+    trigger_time: 4
+    disarmed:
+      trigger_time: 0
+    armed_home:
+      arming_time: 0
+      delay_time: 0
